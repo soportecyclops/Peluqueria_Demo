@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu Toggle
+    // 1. Mobile Menu (Accesible)
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
 
@@ -9,32 +9,54 @@ document.addEventListener('DOMContentLoaded', () => {
             menuToggle.setAttribute('aria-expanded', !isExpanded);
             navLinks.classList.toggle('active');
         });
+
+        // Cerrar menú al hacer clic (Mobile UX)
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                navLinks.classList.remove('active');
+            });
+        });
     }
 
-    // 2. FAQ Accordion Suave
-    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    // 2. Header Shrink on Scroll (Elegancia Editorial)
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }, { passive: true });
 
-    accordionHeaders.forEach(header => {
-        header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    // 3. Intersection Observer (Human Touch - Animaciones fluidas)
+    const revealElements = document.querySelectorAll('.reveal');
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
 
-            // Cierra los demás
-            document.querySelectorAll('.accordion-header').forEach(otherHeader => {
-                if (otherHeader !== header) {
-                    otherHeader.setAttribute('aria-expanded', 'false');
-                    otherHeader.nextElementSibling.style.maxHeight = null;
+    const revealObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                obs.unobserve(entry.target); // Anima solo la primera vez
+            }
+        });
+    }, observerOptions);
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // 4. Accordion Nativo - Cierre Exclusivo
+    // Sustituye el viejo bloque[cite: 5] por lógica HTML5 details optimizada
+    const details = document.querySelectorAll('details[name="faq-group"]');
+    details.forEach(targetDetail => {
+        targetDetail.addEventListener('click', () => {
+            details.forEach(detail => {
+                if (detail !== targetDetail) {
+                    detail.removeAttribute('open');
                 }
             });
-
-            // Toggle actual
-            if (isExpanded) {
-                header.setAttribute('aria-expanded', 'false');
-                content.style.maxHeight = null;
-            } else {
-                header.setAttribute('aria-expanded', 'true');
-                content.style.maxHeight = content.scrollHeight + "px";
-            }
         });
     });
 });
