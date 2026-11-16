@@ -167,3 +167,36 @@ details[open] summary::after { transform: rotate(45deg); }
     .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--c-white); flex-direction: column; padding: 2rem; border-bottom: 1px solid #EAEAEA; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
     .nav-links.active { display: flex; }
 }
+
+/* ==========================================================
+   Estados faltantes y movimiento reducido — 15/11/2026
+   ========================================================== */
+button:disabled,
+[aria-disabled="true"],
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: .55;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(.4);
+}
+
+a:active,
+button:active,
+.btn:active { transform: translateY(0) scale(.985); }
+
+.photo-credit {
+  margin: 1.25rem 0 0;
+  font-size: .75rem;
+  opacity: .6;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
